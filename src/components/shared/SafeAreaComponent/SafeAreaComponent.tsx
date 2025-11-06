@@ -1,6 +1,6 @@
 // SafeAreaComponent.tsx
 import React from 'react';
-import { View, ViewProps } from 'react-native';
+import { StyleSheet, View, ViewProps } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface SafeAreaComponentProps extends ViewProps {
@@ -24,6 +24,7 @@ const SafeAreaComponent: React.FC<SafeAreaComponentProps> = ({
           paddingRight: insets.right,
         },
         style,
+        styles.container,
       ]}
       {...rest}
     >
@@ -31,5 +32,11 @@ const SafeAreaComponent: React.FC<SafeAreaComponentProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 export default SafeAreaComponent;
