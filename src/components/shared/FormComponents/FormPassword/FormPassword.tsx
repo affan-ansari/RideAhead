@@ -15,6 +15,7 @@ import {
 } from 'react-hook-form';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { AppTextInput } from '../../AppTextInput';
+import { Eye, EyeClosed } from 'lucide-react-native';
 
 interface FormPasswordProps<T extends FieldValues> extends TextInputProps {
   name: Path<T>;
@@ -66,9 +67,7 @@ export function FormPassword<T extends FieldValues>({
           style={styles.eyeButton}
           onPress={() => setIsSecure(!isSecure)}
         >
-          <Text style={[styles.eyeText, { color: theme.colors.textSecondary }]}>
-            {isSecure ? '👁️' : '👁️‍🗨️'}
-          </Text>
+          {isSecure ? <Eye /> : <EyeClosed />}
         </TouchableOpacity>
       </View>
       {error && (
