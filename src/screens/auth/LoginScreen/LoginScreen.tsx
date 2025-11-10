@@ -1,4 +1,5 @@
 import {
+  Alert,
   KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
@@ -13,7 +14,11 @@ import {
   FormPassword,
 } from '../../../components/shared/FormComponents';
 import { Theme, useTheme } from '../../../contexts/ThemeContext';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { EMAIL_RULE } from '../../../utils/rules';
+import { useNavigation } from '@react-navigation/native';
+import { AuthStackNavigationProp } from '../../../navigation/types';
+import { signInWithEmail } from '../../../services/auth';
 
 interface LoginFormData {
   email: string;
@@ -33,9 +38,17 @@ export const LoginScreen = () => {
   });
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const [loading, setLoading] = useState(false);
+  const navigation = useNavigation<AuthStackNavigationProp>();
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log('Login data:', data);
+  const onSubmit = async (data: LoginFormData) => {
+    setLoading(true);
+    const { loggedIn, message } = await signInWithEmail(data);
+    setLoading(false);
+    if (loggedIn) navigation.navigate('Signup');
+    else {
+      Alert.alert('Unable to Login', message);
+    }
   };
 
   return (
@@ -58,13 +71,7 @@ export const LoginScreen = () => {
               keyboardType="email-address"
               autoCapitalize="none"
               error={errors.email?.message}
-              rules={{
-                required: 'Email is required',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Invalid email address',
-                },
-              }}
+              rules={EMAIL_RULE}
             />
             <FormPassword
               name="password"
@@ -76,6 +83,7 @@ export const LoginScreen = () => {
               title="Sign In"
               variant="primary"
               fullWidth
+              loading={loading}
               onPress={handleSubmit(onSubmit)}
             />
           </View>
