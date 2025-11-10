@@ -4,6 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { useForm } from 'react-hook-form';
@@ -14,7 +15,7 @@ import {
   FormPassword,
 } from '../../../components/shared/FormComponents';
 import { Theme, useTheme } from '../../../contexts/ThemeContext';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { EMAIL_RULE } from '../../../utils/rules';
 import { useNavigation } from '@react-navigation/native';
 import { AuthStackNavigationProp } from '../../../navigation/types';
@@ -29,7 +30,7 @@ export const LoginScreen = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     defaultValues: {
       email: '',
@@ -38,15 +39,15 @@ export const LoginScreen = () => {
   });
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const [loading, setLoading] = useState(false);
   const navigation = useNavigation<AuthStackNavigationProp>();
 
   const onSubmit = async (data: LoginFormData) => {
-    setLoading(true);
     const { loggedIn, message } = await signInWithEmail(data);
-    setLoading(false);
-    if (loggedIn) navigation.navigate('Signup');
-    else {
+    if (loggedIn) {
+      // Navigate to your main app screen after successful login
+      // navigation.navigate('MainApp');
+      Alert.alert('Logged In', message);
+    } else {
       Alert.alert('Unable to Login', message);
     }
   };
@@ -83,9 +84,16 @@ export const LoginScreen = () => {
               title="Sign In"
               variant="primary"
               fullWidth
-              loading={loading}
+              loading={isSubmitting}
               onPress={handleSubmit(onSubmit)}
             />
+          </View>
+
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Don't have an account? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+              <Text style={styles.signupLink}>Sign Up</Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -120,6 +128,21 @@ export const createStyles = (theme: Theme) => {
     },
     form: {
       gap: 20,
+    },
+    footer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 30,
+    },
+    footerText: {
+      fontSize: 14,
+      color: theme.colors.textSecondary,
+    },
+    signupLink: {
+      fontSize: 14,
+      color: theme.colors.primary,
+      fontWeight: '600',
     },
   });
 };
