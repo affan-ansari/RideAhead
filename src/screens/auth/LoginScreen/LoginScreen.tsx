@@ -43,11 +43,7 @@ export const LoginScreen = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     const { loggedIn, message } = await signInWithEmail(data);
-    if (loggedIn) {
-      // Navigate to your main app screen after successful login
-      // navigation.navigate('MainApp');
-      Alert.alert('Logged In', message);
-    } else {
+    if (!loggedIn) {
       Alert.alert('Unable to Login', message);
     }
   };
