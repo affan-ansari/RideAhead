@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,29 +8,56 @@ import {
 } from 'react-native';
 import MapView, { PROVIDER_DEFAULT, Marker, Polyline } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
-import {
-  FormattedCoordinate,
-  getRoute,
-  MapRegion,
-} from '../../../services/geoApi';
+import { getRoute } from '../../../services/geoApi';
 import { DEFAULT_REGION } from '../../../utils/constants';
 import { AppButton } from '../../../components/shared/AppButton';
 import { SafeAreaComponent } from '../../../components/shared/SafeAreaComponent';
+import { useStore } from '../../../zustand/store';
 
 export const RiderHomeScreen = () => {
-  const [_userLocation, setUserLocation] = useState<null | MapRegion>(null);
+  // Get state and actions from Zustand store
+  // const userLocation = useStore((state) => state.userLocation);
+  const startLocation = useStore(state => state.startLocation);
+  const endLocation = useStore(state => state.endLocation);
+  const routeCoordinates = useStore(state => state.routeCoordinates);
+  const mapRegion = useStore(state => state.mapRegion);
+
+  const setUserLocation = useStore(state => state.setUserLocation);
+  const setStartLocation = useStore(state => state.setStartLocation);
+  const setEndLocation = useStore(state => state.setEndLocation);
+  const setRouteCoordinates = useStore(state => state.setRouteCoordinates);
+  const setMapRegion = useStore(state => state.setMapRegion);
+  const resetMapState = useStore(state => state.resetMapState);
+
+  // Keep local state only for UI-specific concerns
   const [hasLocationPermission, setHasLocationPermission] = useState(false);
-  const [startLocation, setStartLocation] = useState(null);
-  const [endLocation, setEndLocation] = useState(null);
   const [selectingLocation, setSelectingLocation] = useState<
     null | 'start' | 'end'
   >(null);
-  const [routeCoordinates, setRouteCoordinates] = useState<
-    FormattedCoordinate[]
-  >([]);
-  const [mapRegion, setMapRegion] = useState<MapRegion | null>(null);
-  // const [originLocation, setOriginLocation] = useState(null);
-  // const [destinationLocation, setDestinationLocation] = useState(null);
+
+  const getCurrentLocation = useCallback(() => {
+    Geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+        console.log('Current location:', latitude, longitude);
+        setUserLocation({
+          latitude,
+          longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        });
+      },
+      error => {
+        console.error('Location error:', error);
+        Alert.alert('Error', 'Could not get your location');
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 10000,
+      },
+    );
+  }, [setUserLocation]);
 
   useEffect(() => {
     requestLocationPermission();
@@ -40,7 +67,7 @@ export const RiderHomeScreen = () => {
     if (hasLocationPermission) {
       getCurrentLocation();
     }
-  }, [hasLocationPermission]);
+  }, [hasLocationPermission, getCurrentLocation]);
 
   const requestLocationPermission = async () => {
     if (Platform.OS === 'ios') {
@@ -76,30 +103,6 @@ export const RiderHomeScreen = () => {
     }
   };
 
-  const getCurrentLocation = () => {
-    Geolocation.getCurrentPosition(
-      position => {
-        const { latitude, longitude } = position.coords;
-        console.log('Current location:', latitude, longitude);
-        setUserLocation({
-          latitude,
-          longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        });
-      },
-      error => {
-        console.error('Location error:', error);
-        Alert.alert('Error', 'Could not get your location');
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 10000,
-      },
-    );
-  };
-
   const handleMapPress = (event: any) => {
     const { coordinate } = event.nativeEvent;
 
@@ -122,7 +125,6 @@ export const RiderHomeScreen = () => {
 
   const getMapRoute = async () => {
     if (startLocation && endLocation) {
-      await getRoute(startLocation, endLocation);
       const { formattedCoordinates, startPoint, endPoint } = await getRoute(
         startLocation,
         endLocation,
@@ -137,11 +139,11 @@ export const RiderHomeScreen = () => {
       setRouteCoordinates(formattedCoordinates);
     }
   };
+
   const clearRoute = () => {
-    setStartLocation(null);
-    setEndLocation(null);
+    // Use the reset function from the store
+    resetMapState();
     setSelectingLocation(null);
-    setRouteCoordinates([]);
   };
 
   return (
@@ -156,11 +158,8 @@ export const RiderHomeScreen = () => {
           followsUserLocation={true}
           showsCompass={true}
           onPress={handleMapPress}
-          // onRegionChangeComplete={region => {
-          //   console.log('Region changed:', region);
-          // }}
         >
-          {/* Start Location Marker */}
+          {/* Polyline for route */}
           {routeCoordinates.length > 0 && (
             <Polyline
               coordinates={routeCoordinates}
@@ -170,6 +169,8 @@ export const RiderHomeScreen = () => {
               lineJoin="round"
             />
           )}
+
+          {/* Start Location Marker */}
           {startLocation && (
             <Marker
               coordinate={startLocation}
@@ -195,14 +196,15 @@ export const RiderHomeScreen = () => {
           <View style={styles.btnContainer}>
             <AppButton
               title={startLocation ? '✓ Start Set' : 'Pick Start'}
-              fullWidth
               variant={selectingLocation === 'start' ? 'secondary' : 'primary'}
               onPress={handleStartSelection}
+              fullWidth
             />
             <AppButton
-              title={endLocation ? '✓ End Set' : 'Pick Destinaation'}
-              fullWidth
+              title={endLocation ? '✓ End Set' : 'Pick Destination'}
+              variant={selectingLocation === 'end' ? 'secondary' : 'primary'}
               onPress={handleEndSelection}
+              fullWidth
             />
 
             {startLocation && endLocation && (
