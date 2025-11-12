@@ -19,9 +19,6 @@ const SafeAreaComponent: React.FC<SafeAreaComponentProps> = ({
       style={[
         {
           paddingTop: insets.top,
-          paddingBottom: insets.bottom,
-          paddingLeft: insets.left,
-          paddingRight: insets.right,
         },
         style,
         styles.container,
