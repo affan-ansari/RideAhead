@@ -13,13 +13,13 @@ export type Coordinate = {
 };
 
 export interface MapSlice {
-  userLocation: MapRegion | null;
+  userLocation: Coordinate | null;
   startLocation: Coordinate | null;
   endLocation: Coordinate | null;
   routeCoordinates: Coordinate[];
   mapRegion: MapRegion | null;
 
-  setUserLocation: (location: MapRegion | null) => void;
+  setUserLocation: (location: Coordinate | null) => void;
   setStartLocation: (location: Coordinate | null) => void;
   setEndLocation: (location: Coordinate | null) => void;
   setRouteCoordinates: (coordinates: Coordinate[]) => void;
