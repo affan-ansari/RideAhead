@@ -12,41 +12,85 @@ export type Coordinate = {
   longitude: number;
 };
 
+export type Location = {
+  placeId: string;
+  description: string;
+  coordinates?: Coordinate;
+};
+
 export interface MapSlice {
+  // User's current location
   userLocation: Coordinate | null;
-  startLocation: Coordinate | null;
-  endLocation: Coordinate | null;
-  routeCoordinates: Coordinate[];
+
+  // Map region/viewport
   mapRegion: MapRegion | null;
 
-  setUserLocation: (location: Coordinate | null) => void;
-  setStartLocation: (location: Coordinate | null) => void;
-  setEndLocation: (location: Coordinate | null) => void;
-  setRouteCoordinates: (coordinates: Coordinate[]) => void;
-  setMapRegion: (region: MapRegion | null) => void;
+  // Pickup and Dropoff locations (with place details)
+  pickupLocation: Location | null;
+  dropoffLocation: Location | null;
 
-  // Optional: Helper to clear all map state
+  // Route data
+  routeCoordinates: Coordinate[];
+  distance: string | null; // e.g., "5.2 km"
+  duration: string | null; // e.g., "15 mins"
+
+  // Actions
+  setUserLocation: (location: Coordinate | null) => void;
+  setMapRegion: (region: MapRegion | null) => void;
+  setPickupLocation: (location: Location | null) => void;
+  setDropoffLocation: (location: Location | null) => void;
+  setRouteCoordinates: (coordinates: Coordinate[]) => void;
+  setRouteInfo: (distance: string | null, duration: string | null) => void;
+
+  // Helper to clear ride-related state
+  clearRideData: () => void;
+
+  // Helper to reset all map state
   resetMapState: () => void;
 }
 
 export const createMapSlice: StateCreator<MapSlice> = set => ({
+  // Initial state
   userLocation: null,
-  startLocation: null,
-  endLocation: null,
-  routeCoordinates: [],
   mapRegion: null,
+  pickupLocation: null,
+  dropoffLocation: null,
+  routeCoordinates: [],
+  distance: null,
+  duration: null,
 
+  // Actions
   setUserLocation: location => set({ userLocation: location }),
-  setStartLocation: location => set({ startLocation: location }),
-  setEndLocation: location => set({ endLocation: location }),
-  setRouteCoordinates: coordinates => set({ routeCoordinates: coordinates }),
+
   setMapRegion: region => set({ mapRegion: region }),
 
+  setPickupLocation: location => set({ pickupLocation: location }),
+
+  setDropoffLocation: location => set({ dropoffLocation: location }),
+
+  setRouteCoordinates: coordinates => set({ routeCoordinates: coordinates }),
+
+  setRouteInfo: (distance, duration) => set({ distance, duration }),
+
+  // Clear only ride-related data (keep user location and map region)
+  clearRideData: () =>
+    set({
+      pickupLocation: null,
+      dropoffLocation: null,
+      routeCoordinates: [],
+      distance: null,
+      duration: null,
+    }),
+
+  // Reset everything
   resetMapState: () =>
     set({
-      startLocation: null,
-      endLocation: null,
-      routeCoordinates: [],
+      userLocation: null,
       mapRegion: null,
+      pickupLocation: null,
+      dropoffLocation: null,
+      routeCoordinates: [],
+      distance: null,
+      duration: null,
     }),
 });

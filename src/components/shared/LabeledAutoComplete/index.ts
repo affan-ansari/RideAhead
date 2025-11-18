@@ -1,0 +1,1 @@
+export { LabeledAutocomplete } from './LabeledAutoComplete';

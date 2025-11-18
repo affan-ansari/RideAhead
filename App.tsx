@@ -6,24 +6,27 @@ import { NavigationContainer } from '@react-navigation/native';
 import { ThemeProvider } from './src/contexts/ThemeContext';
 import { SheetProvider } from 'react-native-actions-sheet';
 import './src/sheets/sheets';
+import { AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
     <ThemeProvider>
-      <SafeAreaProvider>
-        <GestureHandlerRootView>
-          <SheetProvider>
-            <StatusBar
-              barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-            />
-            <NavigationContainer>
-              <AppNavigator />
-            </NavigationContainer>
-          </SheetProvider>
-        </GestureHandlerRootView>
-      </SafeAreaProvider>
+      <AutocompleteDropdownContextProvider>
+        <SafeAreaProvider>
+          <GestureHandlerRootView>
+            <SheetProvider>
+              <StatusBar
+                barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+              />
+              <NavigationContainer>
+                <AppNavigator />
+              </NavigationContainer>
+            </SheetProvider>
+          </GestureHandlerRootView>
+        </SafeAreaProvider>
+      </AutocompleteDropdownContextProvider>
     </ThemeProvider>
   );
 }

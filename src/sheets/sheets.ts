@@ -1,5 +1,5 @@
 import { registerSheet } from 'react-native-actions-sheet';
-import { LocationPickerSheet } from './LocationPickerSheet';
+import { LocationPickerSheet } from './LocationPickerSheet/LocationPickerSheet';
 import { Coordinate } from '../zustand/mapSlice';
 
 registerSheet('location-picker-sheet', LocationPickerSheet);

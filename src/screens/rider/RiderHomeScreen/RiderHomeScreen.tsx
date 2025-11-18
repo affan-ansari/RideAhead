@@ -19,8 +19,7 @@ export const RiderHomeScreen = () => {
   const handleMapPress = () => {
     SheetManager.show('location-picker-sheet');
   };
-  const handlePanDrag = (e: any) => {
-    console.log(e);
+  const handlePanDrag = () => {
     SheetManager.hide('location-picker-sheet');
   };
 
