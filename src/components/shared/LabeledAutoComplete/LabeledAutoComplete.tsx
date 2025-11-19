@@ -142,11 +142,10 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderTopRightRadius: 4,
     borderTopLeftRadius: 4,
-    borderBottomWidth: 0,
     borderWidth: 1,
     flexDirection: 'row',
     alignSelf: 'flex-start',
-    marginBottom: -2,
+    marginBottom: -3,
     paddingHorizontal: 15,
   },
 });
