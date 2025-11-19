@@ -1,7 +1,9 @@
 import { GOOGLE_PLACES_API_KEY } from '@env';
 import { Coordinate, Location } from '../zustand/mapSlice';
 
-export const fetchPlaceDetails = async (placeId: string) => {
+export const fetchPlaceDetails = async (
+  placeId: string,
+): Promise<Coordinate | undefined> => {
   try {
     const response = await fetch(
       `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=geometry&key=${GOOGLE_PLACES_API_KEY}`,

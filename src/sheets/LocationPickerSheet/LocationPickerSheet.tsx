@@ -54,12 +54,12 @@ export function LocationPickerSheet() {
   const handlePickupSelectItem = useCallback(
     async (item: AutocompleteDropdownItem | null) => {
       if (!item) {
-        setPickupLocation(null);
+        setPickupLocation(undefined);
         return;
       }
 
       if (item.id === 'choose_from_map') {
-        setPickupLocation(null);
+        setPickupLocation(undefined);
         setIsSelectingPickupFromMap(true);
         SheetManager.hide('location-picker-sheet');
         return;
@@ -74,28 +74,30 @@ export function LocationPickerSheet() {
         description: item.title || '',
         coordinates,
       });
+      setPickupMarkerCoordinate(coordinates);
 
       // Snap back down after selection
       sheetRef.current?.snapToIndex(0);
     },
-    [setPickupLocation, setIsSelectingPickupFromMap],
+    [setPickupLocation, setPickupMarkerCoordinate, setIsSelectingPickupFromMap],
   );
 
   const handleDropoffSelectItem = useCallback(
     async (item: AutocompleteDropdownItem | null) => {
       if (!item) {
-        setDropoffLocation(null);
+        setDropoffLocation(undefined);
         return;
       }
 
       if (item.id === 'choose_from_map') {
-        setDropoffLocation(null);
+        setDropoffLocation(undefined);
         setIsSelectingDropoffFromMap(true);
         SheetManager.hide('location-picker-sheet');
         return;
       }
       // Fetch coordinates for the selected place
       const coordinates = await fetchPlaceDetails(item.id);
+      setDropoffMakrerCoordinate(coordinates);
 
       // Update the store with the selected location
       setDropoffLocation({
@@ -107,16 +109,20 @@ export function LocationPickerSheet() {
       // Snap back down after selection
       sheetRef.current?.snapToIndex(0);
     },
-    [setDropoffLocation, setIsSelectingDropoffFromMap],
+    [
+      setDropoffLocation,
+      setDropoffMakrerCoordinate,
+      setIsSelectingDropoffFromMap,
+    ],
   );
 
   const handlePickupClear = useCallback(() => {
-    setPickupLocation(null);
+    setPickupLocation(undefined);
     setPickupMarkerCoordinate(null);
   }, [setPickupLocation, setPickupMarkerCoordinate]);
 
   const handleDropoffClear = useCallback(() => {
-    setDropoffLocation(null);
+    setDropoffLocation(undefined);
     setDropoffMakrerCoordinate(null);
   }, [setDropoffLocation, setDropoffMakrerCoordinate]);
 

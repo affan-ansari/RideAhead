@@ -23,11 +23,11 @@ export interface MapSlice {
   userLocation: Coordinate | null;
 
   // Map region/viewport
-  mapRegion: MapRegion | null;
+  mapRegion: MapRegion | undefined;
 
   // Pickup and Dropoff locations (with place details)
-  pickupLocation: Location | null;
-  dropoffLocation: Location | null;
+  pickupLocation: Location | undefined;
+  dropoffLocation: Location | undefined;
 
   // Route data
   routeCoordinates: Coordinate[];
@@ -42,15 +42,19 @@ export interface MapSlice {
 
   // Actions
   setUserLocation: (location: Coordinate | null) => void;
-  setMapRegion: (region: MapRegion | null) => void;
-  setPickupLocation: (location: Location | null) => void;
-  setDropoffLocation: (location: Location | null) => void;
+  setMapRegion: (region: MapRegion | undefined) => void;
+  setPickupLocation: (location: Location | undefined) => void;
+  setDropoffLocation: (location: Location | undefined) => void;
   setRouteCoordinates: (coordinates: Coordinate[]) => void;
   setRouteInfo: (distance: string | null, duration: string | null) => void;
   setIsSelectingPickupFromMap: (isSelecting: boolean) => void;
-  setPickupMarkerCoordinate: (coordinate: Coordinate | null) => void;
+  setPickupMarkerCoordinate: (
+    coordinate: Coordinate | null | undefined,
+  ) => void;
   setIsSelectingDropoffFromMap: (isSelecting: boolean) => void;
-  setDropoffMarkerCoordinate: (coordinate: Coordinate | null) => void;
+  setDropoffMarkerCoordinate: (
+    coordinate: Coordinate | null | undefined,
+  ) => void;
 
   // Helper to clear ride-related state
   clearRideData: () => void;
@@ -62,9 +66,9 @@ export interface MapSlice {
 export const createMapSlice: StateCreator<MapSlice> = set => ({
   // Initial state
   userLocation: null,
-  mapRegion: null,
-  pickupLocation: null,
-  dropoffLocation: null,
+  mapRegion: undefined,
+  pickupLocation: undefined,
+  dropoffLocation: undefined,
   routeCoordinates: [],
   distance: null,
   duration: null,
@@ -101,8 +105,8 @@ export const createMapSlice: StateCreator<MapSlice> = set => ({
   // Clear only ride-related data (keep user location and map region)
   clearRideData: () =>
     set({
-      pickupLocation: null,
-      dropoffLocation: null,
+      pickupLocation: undefined,
+      dropoffLocation: undefined,
       routeCoordinates: [],
       distance: null,
       duration: null,
@@ -112,9 +116,9 @@ export const createMapSlice: StateCreator<MapSlice> = set => ({
   resetMapState: () =>
     set({
       userLocation: null,
-      mapRegion: null,
-      pickupLocation: null,
-      dropoffLocation: null,
+      mapRegion: undefined,
+      pickupLocation: undefined,
+      dropoffLocation: undefined,
       routeCoordinates: [],
       distance: null,
       duration: null,

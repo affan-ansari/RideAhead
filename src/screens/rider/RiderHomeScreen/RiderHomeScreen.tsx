@@ -1,14 +1,17 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
 import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 import { DEFAULT_REGION } from '../../../utils/constants';
 import { SafeAreaComponent } from '../../../components/shared/SafeAreaComponent';
 import { useStore } from '../../../zustand/store';
 import { SheetManager } from 'react-native-actions-sheet';
-import { requestLocationPermission } from './utils';
+import { getRegion, requestLocationPermission } from './utils';
 
 export const RiderHomeScreen = () => {
+  const mapRef = useRef<MapView>(null);
   const mapRegion = useStore(state => state.mapRegion);
+  const pickupLocation = useStore(state => state.pickupLocation);
+  const dropoffLocation = useStore(state => state.dropoffLocation);
   const isSelectingPickupFromMap = useStore(
     state => state.isSelectingPickupFromMap,
   );
@@ -33,6 +36,14 @@ export const RiderHomeScreen = () => {
     requestLocationPermission();
     SheetManager.show('location-picker-sheet');
   }, []);
+
+  useEffect(() => {
+    const region = getRegion(pickupLocation, dropoffLocation);
+    if (region && mapRef.current) {
+      mapRef.current.animateToRegion(region, 500); // 500ms animation duration
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pickupLocation?.placeId, dropoffLocation?.placeId]);
 
   const handlePanDragStart = () => {
     SheetManager.hide('location-picker-sheet');
@@ -80,6 +91,7 @@ export const RiderHomeScreen = () => {
     <SafeAreaComponent>
       <View style={styles.container}>
         <MapView
+          ref={mapRef}
           style={styles.map}
           provider={PROVIDER_DEFAULT}
           initialRegion={mapRegion || DEFAULT_REGION}
