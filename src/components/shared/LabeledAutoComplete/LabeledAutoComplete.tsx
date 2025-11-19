@@ -8,6 +8,7 @@ import {
 import { useTheme } from '../../../contexts/ThemeContext';
 
 interface LabeledAutocompleteProps {
+  value: string | undefined;
   label: string;
   placeholder: string;
   onChangeText: (query: string) => Promise<AutocompleteDropdownItem[] | null>;
@@ -18,11 +19,14 @@ interface LabeledAutocompleteProps {
   debounce?: number;
   emptyResultText?: string;
   showClear?: boolean;
+  showChevron?: boolean;
   suggestionsListMaxHeight?: number;
   initialValue: AutocompleteDropdownItem | string | { id: string } | undefined;
+  disabled?: boolean;
 }
 
 export function LabeledAutocomplete({
+  value,
   label,
   placeholder,
   onChangeText,
@@ -34,7 +38,9 @@ export function LabeledAutocomplete({
   debounce = 600,
   emptyResultText = 'No results found',
   showClear = true,
+  showChevron = true,
   suggestionsListMaxHeight = Dimensions.get('window').height * 0.4,
+  disabled = false,
 }: LabeledAutocompleteProps) {
   const { theme } = useTheme();
   const dropdownController = useRef<IAutocompleteDropdownRef | null>(null);
@@ -92,6 +98,7 @@ export function LabeledAutocomplete({
         <Text style={{ color: theme.colors.buttonText }}>{label}</Text>
       </View>
       <AutocompleteDropdown
+        editable={!disabled}
         controller={controller => {
           dropdownController.current = controller;
         }}
@@ -114,6 +121,7 @@ export function LabeledAutocomplete({
           autoCorrect: false,
           autoCapitalize: 'none',
           onFocus,
+          value: value,
         }}
         inputContainerStyle={{
           ...styles.inputContainer,
@@ -122,6 +130,7 @@ export function LabeledAutocomplete({
         suggestionsListContainerStyle={styles.listContainer}
         emptyResultText={emptyResultText}
         showClear={showClear}
+        showChevron={showChevron}
       />
     </View>
   );

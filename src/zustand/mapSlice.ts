@@ -34,6 +34,12 @@ export interface MapSlice {
   distance: string | null; // e.g., "5.2 km"
   duration: string | null; // e.g., "15 mins"
 
+  // Map selection mode
+  isSelectingPickupFromMap: boolean;
+  pickupMarkerCoordinate: Coordinate | null;
+  isSelectingDropoffFromMap: boolean;
+  dropoffMarkerCoordinate: Coordinate | null;
+
   // Actions
   setUserLocation: (location: Coordinate | null) => void;
   setMapRegion: (region: MapRegion | null) => void;
@@ -41,6 +47,10 @@ export interface MapSlice {
   setDropoffLocation: (location: Location | null) => void;
   setRouteCoordinates: (coordinates: Coordinate[]) => void;
   setRouteInfo: (distance: string | null, duration: string | null) => void;
+  setIsSelectingPickupFromMap: (isSelecting: boolean) => void;
+  setPickupMarkerCoordinate: (coordinate: Coordinate | null) => void;
+  setIsSelectingDropoffFromMap: (isSelecting: boolean) => void;
+  setDropoffMarkerCoordinate: (coordinate: Coordinate | null) => void;
 
   // Helper to clear ride-related state
   clearRideData: () => void;
@@ -58,6 +68,10 @@ export const createMapSlice: StateCreator<MapSlice> = set => ({
   routeCoordinates: [],
   distance: null,
   duration: null,
+  isSelectingPickupFromMap: false,
+  pickupMarkerCoordinate: null,
+  isSelectingDropoffFromMap: false,
+  dropoffMarkerCoordinate: null,
 
   // Actions
   setUserLocation: location => set({ userLocation: location }),
@@ -71,6 +85,18 @@ export const createMapSlice: StateCreator<MapSlice> = set => ({
   setRouteCoordinates: coordinates => set({ routeCoordinates: coordinates }),
 
   setRouteInfo: (distance, duration) => set({ distance, duration }),
+
+  setIsSelectingPickupFromMap: isSelecting =>
+    set({ isSelectingPickupFromMap: isSelecting }),
+
+  setPickupMarkerCoordinate: coordinate =>
+    set({ pickupMarkerCoordinate: coordinate }),
+
+  setIsSelectingDropoffFromMap: isSelecting =>
+    set({ isSelectingDropoffFromMap: isSelecting }),
+
+  setDropoffMarkerCoordinate: coordinate =>
+    set({ dropoffMarkerCoordinate: coordinate }),
 
   // Clear only ride-related data (keep user location and map region)
   clearRideData: () =>
