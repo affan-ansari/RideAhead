@@ -1,4 +1,4 @@
-import { PermissionsAndroid, Platform } from 'react-native';
+import { Alert, PermissionsAndroid, Platform } from 'react-native';
 
 export const requestLocationPermission = async () => {
   if (Platform.OS !== 'android') return;
@@ -15,9 +15,7 @@ export const requestLocationPermission = async () => {
     );
 
     if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-      console.log('Location permission denied');
-    } else {
-      console.log('Location permission granted');
+      Alert.alert('Location permission denied');
     }
   } catch (err) {
     console.warn(err);

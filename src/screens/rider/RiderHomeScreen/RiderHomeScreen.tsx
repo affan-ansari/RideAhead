@@ -19,8 +19,11 @@ export const RiderHomeScreen = () => {
   const handleMapPress = () => {
     SheetManager.show('location-picker-sheet');
   };
-  const handlePanDrag = () => {
+  const handlePanDragStart = () => {
     SheetManager.hide('location-picker-sheet');
+  };
+  const handlePanDragEnd = () => {
+    SheetManager.show('location-picker-sheet');
   };
 
   return (
@@ -35,7 +38,9 @@ export const RiderHomeScreen = () => {
           followsUserLocation={true}
           showsCompass={true}
           onPress={handleMapPress}
-          onPanDrag={handlePanDrag}
+          // onPanDrag={handlePanDrag}
+          onRegionChangeStart={handlePanDragStart}
+          onRegionChangeComplete={handlePanDragEnd}
         />
       </View>
     </SafeAreaComponent>

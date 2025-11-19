@@ -19,6 +19,7 @@ interface LabeledAutocompleteProps {
   emptyResultText?: string;
   showClear?: boolean;
   suggestionsListMaxHeight?: number;
+  initialValue: AutocompleteDropdownItem | string | { id: string } | undefined;
 }
 
 export function LabeledAutocomplete({
@@ -28,6 +29,7 @@ export function LabeledAutocomplete({
   onSelectItem,
   onClear,
   onFocus,
+  initialValue = undefined,
   initialSuggestions = null,
   debounce = 600,
   emptyResultText = 'No results found',
@@ -74,13 +76,9 @@ export function LabeledAutocomplete({
     onClear();
   }, [onClear, initialSuggestions]);
 
-  const handleOpenSuggestionsList = useCallback(
-    (isOpened: boolean) => {
-      console.log('Suggestions list opened:', isOpened);
-      console.log('Current suggestions:', suggestions);
-    },
-    [suggestions],
-  );
+  const handleOpenSuggestionsList = useCallback((isOpened: boolean) => {
+    console.log('Suggestions list opened:', isOpened);
+  }, []);
 
   return (
     <View>
@@ -97,6 +95,7 @@ export function LabeledAutocomplete({
         controller={controller => {
           dropdownController.current = controller;
         }}
+        initialValue={initialValue}
         direction="down"
         dataSet={suggestions}
         onChangeText={handleChangeText}

@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
 import { AutocompleteDropdownItem } from 'react-native-autocomplete-dropdown';
@@ -14,6 +14,8 @@ export function LocationPickerSheet() {
   const sheetRef = useRef<ActionSheetRef>(null);
   const setPickupLocation = useStore(state => state.setPickupLocation);
   const setDropoffLocation = useStore(state => state.setDropoffLocation);
+  const pickupLocation = useStore(state => state.pickupLocation);
+  const dropoffLocation = useStore(state => state.dropoffLocation);
 
   const handleChangeText = useCallback(async (query: string) => {
     const data = await fetchPlaceSuggestions(query);
@@ -26,8 +28,6 @@ export function LocationPickerSheet() {
         setPickupLocation(null);
         return;
       }
-
-      console.log('Selected:', item);
 
       // Fetch coordinates for the selected place
       const coordinates = await fetchPlaceDetails(item.id);
@@ -51,9 +51,6 @@ export function LocationPickerSheet() {
         setDropoffLocation(null);
         return;
       }
-
-      console.log('Selected:', item);
-
       // Fetch coordinates for the selected place
       const coordinates = await fetchPlaceDetails(item.id);
 
@@ -82,6 +79,21 @@ export function LocationPickerSheet() {
     sheetRef.current?.snapToIndex(1);
   };
 
+  const initialPickupValue = useMemo(() => {
+    if (pickupLocation?.placeId) {
+      return { id: pickupLocation.placeId, title: pickupLocation.description };
+    }
+  }, [pickupLocation]);
+
+  const initialDropoffValue = useMemo(() => {
+    if (dropoffLocation?.placeId) {
+      return {
+        id: dropoffLocation.placeId,
+        title: dropoffLocation.description,
+      };
+    }
+  }, [dropoffLocation]);
+
   return (
     <ActionSheet
       ref={sheetRef}
@@ -97,6 +109,7 @@ export function LocationPickerSheet() {
         <LabeledAutocomplete
           label="From"
           placeholder="Search pickup location..."
+          initialValue={initialPickupValue}
           onChangeText={handleChangeText}
           onSelectItem={handlePickupSelectItem}
           onClear={handlePickupClear}
@@ -110,6 +123,7 @@ export function LocationPickerSheet() {
         <LabeledAutocomplete
           label="To"
           placeholder="Search dropoff location..."
+          initialValue={initialDropoffValue}
           onChangeText={handleChangeText}
           onSelectItem={handleDropoffSelectItem}
           onClear={handleDropoffClear}
