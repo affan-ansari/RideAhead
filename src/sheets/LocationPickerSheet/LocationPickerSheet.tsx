@@ -54,12 +54,10 @@ export function LocationPickerSheet() {
   const handlePickupSelectItem = useCallback(
     async (item: AutocompleteDropdownItem | null) => {
       if (!item) {
-        setPickupLocation(undefined);
         return;
       }
 
       if (item.id === 'choose_from_map') {
-        setPickupLocation(undefined);
         setIsSelectingPickupFromMap(true);
         SheetManager.hide('location-picker-sheet');
         return;
@@ -85,12 +83,10 @@ export function LocationPickerSheet() {
   const handleDropoffSelectItem = useCallback(
     async (item: AutocompleteDropdownItem | null) => {
       if (!item) {
-        setDropoffLocation(undefined);
         return;
       }
 
       if (item.id === 'choose_from_map') {
-        setDropoffLocation(undefined);
         setIsSelectingDropoffFromMap(true);
         SheetManager.hide('location-picker-sheet');
         return;
