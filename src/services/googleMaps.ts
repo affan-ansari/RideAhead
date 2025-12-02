@@ -1,22 +1,14 @@
 import { GOOGLE_PLACES_API_KEY } from '@env';
 import { Coordinate, Location } from '../zustand/mapSlice';
 
-export const fetchPlaceDetails = async (
-  placeId: string,
-): Promise<Coordinate | undefined> => {
+export const fetchPlaceDetails = async (placeId: string) => {
   try {
     const response = await fetch(
       `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${GOOGLE_PLACES_API_KEY}`,
     );
 
     const data = await response.json();
-
-    if (data.result?.geometry?.location) {
-      return {
-        latitude: data.result.geometry.location.lat,
-        longitude: data.result.geometry.location.lng,
-      };
-    }
+    return data.result;
   } catch (error) {
     console.error('Error fetching place details:', error);
   }

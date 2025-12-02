@@ -64,7 +64,18 @@ export function LocationPickerSheet() {
       }
 
       // Fetch coordinates for the selected place
-      const coordinates = await fetchPlaceDetails(item.id);
+      const details = await fetchPlaceDetails(item.id);
+      if (!details?.geometry?.location) {
+        return;
+      }
+      const coordinates = {
+        latitude: details.geometry.location.lat,
+        longitude: details.geometry.location.lng,
+      };
+
+      console.log('Selected pickup coordinates:', coordinates);
+
+      setPickupMarkerCoordinate(coordinates);
 
       // Update the store with the selected location
       setPickupLocation({
@@ -72,7 +83,6 @@ export function LocationPickerSheet() {
         description: item.title || '',
         coordinates,
       });
-      setPickupMarkerCoordinate(coordinates);
 
       // Snap back down after selection
       sheetRef.current?.snapToIndex(0);
@@ -92,7 +102,15 @@ export function LocationPickerSheet() {
         return;
       }
       // Fetch coordinates for the selected place
-      const coordinates = await fetchPlaceDetails(item.id);
+      const details = await fetchPlaceDetails(item.id);
+      if (!details?.geometry?.location) {
+        return;
+      }
+      const coordinates = {
+        latitude: details.geometry.location.lat,
+        longitude: details.geometry.location.lng,
+      };
+      console.log('Selected dropoff coordinates:', coordinates);
       setDropoffMakrerCoordinate(coordinates);
 
       // Update the store with the selected location
