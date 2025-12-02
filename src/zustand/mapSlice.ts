@@ -31,8 +31,6 @@ export interface MapSlice {
 
   // Route data
   routeCoordinates: Coordinate[];
-  distance: string | null; // e.g., "5.2 km"
-  duration: string | null; // e.g., "15 mins"
 
   // Map selection mode
   isSelectingPickupFromMap: boolean;
@@ -46,7 +44,6 @@ export interface MapSlice {
   setPickupLocation: (location: Location | undefined) => void;
   setDropoffLocation: (location: Location | undefined) => void;
   setRouteCoordinates: (coordinates: Coordinate[]) => void;
-  setRouteInfo: (distance: string | null, duration: string | null) => void;
   setIsSelectingPickupFromMap: (isSelecting: boolean) => void;
   setPickupMarkerCoordinate: (
     coordinate: Coordinate | null | undefined,
@@ -70,8 +67,6 @@ export const createMapSlice: StateCreator<MapSlice> = set => ({
   pickupLocation: undefined,
   dropoffLocation: undefined,
   routeCoordinates: [],
-  distance: null,
-  duration: null,
   isSelectingPickupFromMap: false,
   pickupMarkerCoordinate: null,
   isSelectingDropoffFromMap: false,
@@ -87,8 +82,6 @@ export const createMapSlice: StateCreator<MapSlice> = set => ({
   setDropoffLocation: location => set({ dropoffLocation: location }),
 
   setRouteCoordinates: coordinates => set({ routeCoordinates: coordinates }),
-
-  setRouteInfo: (distance, duration) => set({ distance, duration }),
 
   setIsSelectingPickupFromMap: isSelecting =>
     set({ isSelectingPickupFromMap: isSelecting }),
@@ -108,8 +101,6 @@ export const createMapSlice: StateCreator<MapSlice> = set => ({
       pickupLocation: undefined,
       dropoffLocation: undefined,
       routeCoordinates: [],
-      distance: null,
-      duration: null,
     }),
 
   // Reset everything
@@ -120,7 +111,5 @@ export const createMapSlice: StateCreator<MapSlice> = set => ({
       pickupLocation: undefined,
       dropoffLocation: undefined,
       routeCoordinates: [],
-      distance: null,
-      duration: null,
     }),
 });

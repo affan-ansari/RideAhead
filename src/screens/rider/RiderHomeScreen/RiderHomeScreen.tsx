@@ -46,10 +46,10 @@ export const RiderHomeScreen = () => {
   }, [pickupLocation?.placeId, dropoffLocation?.placeId]);
 
   const handlePanDragStart = () => {
-    SheetManager.hide('location-picker-sheet');
+    SheetManager.get('location-picker-sheet').current.snapToOffset(0);
   };
   const handlePanDragEnd = () => {
-    SheetManager.show('location-picker-sheet');
+    SheetManager.get('location-picker-sheet').current.snapToOffset(30);
   };
 
   const handleMapPress = useCallback(

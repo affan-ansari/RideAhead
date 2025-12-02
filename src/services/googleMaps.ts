@@ -6,7 +6,7 @@ export const fetchPlaceDetails = async (
 ): Promise<Coordinate | undefined> => {
   try {
     const response = await fetch(
-      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=geometry&key=${GOOGLE_PLACES_API_KEY}`,
+      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${GOOGLE_PLACES_API_KEY}`,
     );
 
     const data = await response.json();

@@ -59,7 +59,7 @@ export function LocationPickerSheet() {
 
       if (item.id === 'choose_from_map') {
         setIsSelectingPickupFromMap(true);
-        SheetManager.hide('location-picker-sheet');
+        SheetManager.get('location-picker-sheet').current.snapToOffset(10);
         return;
       }
 
@@ -88,7 +88,7 @@ export function LocationPickerSheet() {
 
       if (item.id === 'choose_from_map') {
         setIsSelectingDropoffFromMap(true);
-        SheetManager.hide('location-picker-sheet');
+        SheetManager.get('location-picker-sheet').current.snapToOffset(10);
         return;
       }
       // Fetch coordinates for the selected place
@@ -153,14 +153,29 @@ export function LocationPickerSheet() {
     }
   };
 
+  const canFindRouteDetails = useMemo(() => {
+    return (
+      pickupLocation?.coordinates &&
+      dropoffLocation?.coordinates &&
+      !isSelectingPickupFromMap &&
+      !isSelectingDropoffFromMap
+    );
+  }, [
+    pickupLocation,
+    dropoffLocation,
+    isSelectingPickupFromMap,
+    isSelectingDropoffFromMap,
+  ]);
+
   return (
     <ActionSheet
       ref={sheetRef}
       isModal={false}
       backgroundInteractionEnabled
       snapPoints={[30, 80]}
+      initialSnapIndex={0}
       gestureEnabled
-      closable={!isSelectingPickupFromMap}
+      closable={false}
       disableDragBeyondMinimumSnapPoint
     >
       <View style={styles.container}>
@@ -221,6 +236,13 @@ export function LocationPickerSheet() {
               isSelectingPickupFromMap ? 'Confirm Pickup' : 'Confirm Drop off'
             }
             onPress={handleLocationFromMarker}
+          />
+        )}
+        {canFindRouteDetails && (
+          <AppButton
+            fullWidth
+            title="Find Route"
+            onPress={() => SheetManager.hide('location-picker-sheet')}
           />
         )}
       </View>
